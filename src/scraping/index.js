@@ -2,6 +2,8 @@ const cheerio = require('cheerio'),
     axios = require('axios');
 const url = 'https://www.chefclub.tv';
 
+const Recipes = require('../models/recipesModel');
+
 module.exports.allRecipes = () => {
     axios.get(url + '/fr/c/recettes')
         .then((html) => {
@@ -23,11 +25,13 @@ module.exports.allRecipes = () => {
                     })
 
             listRecipes.map(async(recipe) => {
-                recipe = await this.detailRecipe(recipe)
-                console.log(recipe);
-                // return recipe;
-            })
-            console.log(listRecipes);
+                    detailRecipe = await this.detailRecipe(recipe)
+                    recipe.ingredients = detailRecipe.ingredients;
+                    recipe.step = detailRecipe.steps;
+
+                    Recipes.create(recipe);
+                })
+                // console.log(listRecipes);
         })
         .catch((error) => {
             // handle error
@@ -41,13 +45,43 @@ module.exports.detailRecipe = (recipe) => {
             .then((html) => {
 
                 const $ = cheerio.load(html.data);
-                const dicoGramming = ['cg', 'mg', 'g', 'kg', 'cl', 'ml', 'l', 'kl', 'tranches', 'gousse', 'sachet', 'c.', 'C.']
-                console.log($('div.recipe_ingredients ul').eq(0).find('li').eq(0).find('strong').text().split(' ')[0]);
-                // resolve($('div.recipe_ingredients ul').eq(0).find('li').find('strong').split(' ')[0])
+                const nbLi = $('div.recipe_ingredients ul').eq(0).find('li').length
+                const nbP = $('ol li p').length
+                let steps = [],
+                    ingredients = [];
+                for (let i = 0; i < nbLi; i++) {
+                    ingredients.push(searchDico($('div.recipe_ingredients ul').eq(0).find('li').eq(i).find('strong').text().trim().split(' ')[0]));
+                    ingredients[i].name = $('div.recipe_ingredients ul').eq(0).find('li').eq(i).text().split($('div.recipe_ingredients ul').eq(0).find('li').eq(i).find('strong').text())[1];
+                }
+                for (let i = 0; i < nbP; i++)
+                    steps.push($('ol li p').eq(i).text())
+
+                resolve({ ingredients, steps })
+
             })
             .catch((error) => {
                 // handle error
                 console.log(error);
             });
     })
+}
+
+const searchDico = (text) => {
+    let retour = { number: '', gramming: '' }
+    let isSpace = false
+    if (text.length > 1) {
+        for (let i = 0; i < text.length; i++) {
+            if (text[i].trim().length === 0)
+                isSpace = true
+            if (isSpace)
+                retour.gramming += text[i]
+            else if (text[i] === ',')
+                retour.number += '.'
+            else
+                retour.number += text[i]
+        }
+        return { quantity: parseFloat(retour.number), gramming: retour.gramming };
+    } else
+        return { quantity: (text.trim().length === 0) ? '' : parseFloat(text), gramming: '' }
+
 }

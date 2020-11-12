@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
- mongoose.connect('mongodb://localhost/chefclub', {
-// mongoose.connect('mongodb+srv://zoubida:zoubida@cluster0.z40hd.mongodb.net/chefclub?retryWrites=true&w=majority', {
+mongoose.connect('mongodb://localhost/chefclub', {
+    // mongoose.connect('mongodb+srv://zoubida:zoubida@cluster0.z40hd.mongodb.net/chefclub?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
