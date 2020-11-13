@@ -2,42 +2,21 @@ const express = require('express'); // Chargement Express
 const app = express(); // Instance Express
 global.bdd = require('./src/models');
 const route = require('./src/routes');
+const cron = require('cron').CronJob;
 
-
-
-/**
- * Zone de test
- *
-
-const Recipes = require('./src/models/recipesModel');
-let newRecipe = new Recipes();
-newRecipe.title = 'Bob';
-newRecipe.preparationTime = 30;
-newRecipe.numberPeople = 3;
-newRecipe.step = [
-    'Couper du fromage',
-    'Couper du fromage',
-    'Couper du fromage'
-];
-newRecipe.ingredients = [{
-    name: 'Banane',
-    quantity: 2,
-    gramming: 'g',
-}]
-newRecipe.zoubida = 8
-
-newRecipe.save()
-*/
 
 const scrap = require('./src/scraping');
-
-scrap.allRecipes();
-
 /**
- * End Zone de test
+ * Seconds
+ * Minutes
+ * Hours
+ * Months
+ * Day of Week
  */
-
-
+new cron('0 * * */30 * *', function() {
+    scrap.allRecipes();
+    console.log('run tache cron');
+}).start();
 
 const port = process.env.PORT || 8020; // Port ecoute du server
 const www = process.env.WWW || './public'; // Point racine pour le dossier public

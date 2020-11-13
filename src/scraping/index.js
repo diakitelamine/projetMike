@@ -24,6 +24,8 @@ module.exports.allRecipes = () => {
                         preparationTime: parseInt($('#recipes li').eq(i).find('div.details').find('li').eq(1).text().split(' ')[1]),
                     })
 
+            Recipes.deleteMany({}, (err) => console.log((err) ? err : 'The data of the recipe collection is deleted'));
+
             listRecipes.map(async(recipe) => {
                     detailRecipe = await this.detailRecipe(recipe)
                     recipe.ingredients = detailRecipe.ingredients;

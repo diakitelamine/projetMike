@@ -1,22 +1,23 @@
 {
-  "name": "rest-api-chefclub",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "pm2 kill && pm2 start main.js --watch && pm2 logs",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.17.1",
-    "mongoose": "^5.10.13"
-  },
-  "devDependencies": {
-    "axios": "^0.21.0",
-    "cheerio": "^1.0.0-rc.3",
-    "mocha": "^8.2.1"
-  }
+    "name": "rest-api-chefclub",
+    "version": "1.0.0",
+    "description": "",
+    "main": "main.js",
+    "scripts": {
+        "start": "pm2 kill && pm2 start main.js --watch && pm2 logs",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "cron": "^1.8.2",
+        "express": "^4.17.1",
+        "mongoose": "^5.10.13"
+    },
+    "devDependencies": {
+        "axios": "^0.21.0",
+        "cheerio": "^1.0.0-rc.3",
+        "mocha": "^8.2.1"
+    }
 }
