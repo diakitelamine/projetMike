@@ -5,7 +5,9 @@ const url = 'https://www.chefclub.tv';
 const Recipes = require('../models/recipesModel');
 
 module.exports.allRecipes = () => {
-    axios.get(url + '/fr/c/recettes')
+    const elements = ['original', 'daily', 'light-and-fun', 'kids', 'cocktails'];
+    for (let k = 0; k < elements.length; k++)
+        axios.get(url + '/fr/recettes/' + elements[k])
         .then((html) => {
 
             let listRecipes = []
@@ -17,6 +19,7 @@ module.exports.allRecipes = () => {
             for (let i = 0; i < recipes; i++)
                 if ($('#recipes li').eq(i).find('h3').text().length !== 0)
                     listRecipes.push({
+                        type: elements[k],
                         title: $('#recipes li').eq(i).find('h3').text(),
                         link: $('#recipes li').eq(i).find('a').attr('href'),
                         image: $('#recipes li').eq(i).find('div.thumbnail').css('background-image').split("'")[1],

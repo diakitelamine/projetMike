@@ -1,11 +1,13 @@
-const express = require('express'); // Chargement Express
-const app = express(); // Instance Express
+const express = require('express'),
+    cron = require('cron').CronJob,
+    bodyParser = require('body-parser');
+
+const app = express(),
+    route = require('./src/routes'),
+    scrap = require('./src/scraping');
+
 global.bdd = require('./src/models');
-const route = require('./src/routes');
-const cron = require('cron').CronJob;
 
-
-const scrap = require('./src/scraping');
 /**
  * Seconds
  * Minutes
@@ -13,7 +15,7 @@ const scrap = require('./src/scraping');
  * Months
  * Day of Week
  */
-new cron('0 * * */30 * *', function() {
+new cron('0 * * */30 * *', () => {
     scrap.allRecipes();
     console.log('run tache cron');
 }).start();
@@ -23,6 +25,7 @@ const www = process.env.WWW || './public'; // Point racine pour le dossier publi
 
 // Middelware
 app.use(express.static(www)); // Emplacement du dossier public dans express
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(route);
 

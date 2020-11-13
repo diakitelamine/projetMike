@@ -24,6 +24,11 @@ const Recipes = new Schema({
     link: {
         type: String,
     },
+    type: {
+        type: String,
+        default: 'original',
+        enum: ['original', 'daily', 'light-and-fun', 'kids', 'cocktails']
+    },
     step: [{
         type: String,
         required: true,
